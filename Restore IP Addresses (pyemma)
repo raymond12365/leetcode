@@ -1,0 +1,48 @@
+import java.util.*;
+
+public class RestoreIPAddresses {
+	ArrayList<String> res = new ArrayList<String>();
+	public void dfs(String s, int ind, int cnt, String cur) {
+		if(cnt == 4) {
+			if(ind == s.length()) {
+				res.add(cur);
+			}
+		}
+		else {
+			if(ind < s.length() && s.charAt(ind) == '0') { // All digits must be used, so leading zeros are not allowed
+				StringBuffer sb = new StringBuffer(cur);
+				sb.append("0");
+				if(cnt != 3)
+					sb.append(".");
+				dfs(s, ind+1, cnt+1, sb.toString());
+			}
+			else {
+				for(int i = ind; i < s.length()-3+cnt; i++) {
+					int num = Integer.parseInt(s.substring(ind, i+1));
+					if(i != ind && Integer.parseInt(s.substring(ind, i)) == num) continue;// remove duplicates if exist, actucally if all digits must be used, no need here
+					if(num >= 0 && num <= 255) {
+						StringBuffer sb = new StringBuffer(cur);
+						sb.append(String.valueOf(num));
+						if(cnt != 3)
+							sb.append(".");
+						dfs(s, i+1, cnt+1, sb.toString());
+					}
+					else return;
+				}
+			}
+		}
+	}
+
+	public List<String> restoreIpAddresses(String s) {
+		dfs(s, 0, 0, "");
+		return res;
+	}
+
+	public static void main(String[] args) {
+		RestoreIPAddresses ra = new RestoreIPAddresses();
+		List<String> res = ra.restoreIpAddresses("");
+		for(String str : res) {
+			System.out.println(str);
+		}
+	}
+}
