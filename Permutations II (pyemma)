@@ -1,0 +1,40 @@
+import java.util.*;
+
+public class PermutationsII {
+	ArrayList<List<Integer>> res = new ArrayList<List<Integer>>();
+	public List<List<Integer>> permuteUnique(int[] num) {
+	    Arrays.sort(num);
+		dfs(num, 0);
+		return res;
+	}
+
+	private void dfs(int[] num, int ind) {
+		if(ind == num.length) {
+			ArrayList<Integer> arr = new ArrayList<Integer>();
+			for(int i = 0; i < num.length; i++) {
+				arr.add(num[i]);
+			}
+			res.add(arr);
+		}
+		else {
+		    HashSet<Integer> set = new HashSet<Integer>(); // record with element has even been replaced
+			for(int i = ind; i < num.length; i++) {
+				if(set.contains(num[i]) == true) continue;
+				int temp = num[i];
+				num[i] = num[ind];
+				num[ind] = temp;
+				dfs(num, ind+1);
+				temp = num[i];
+				num[i] = num[ind];
+				num[ind] = temp;
+				set.add(num[i]);
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+		PermutationsII pe = new PermutationsII();
+		int[] A = {0, 0, 0, 1, 9};
+		System.out.println(pe.permuteUnique(A));
+	}
+}
