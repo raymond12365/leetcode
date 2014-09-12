@@ -1,0 +1,61 @@
+import java.util.*;
+
+public class SurroundedRegions {
+	public void solve(char[][] board) {
+        int m = board.length;
+        if(m == 0) return;
+        int n = board[0].length;
+        boolean[][] check = new boolean[m][n];
+        ArrayList<Integer> X = new ArrayList<Integer>();
+        ArrayList<Integer> Y = new ArrayList<Integer>();
+        
+        for(int i = 0; i < m; i++) {
+            if(board[i][0] == 'O') {
+                check[i][0] = true;
+                X.add(i); Y.add(0);
+            }
+            if(board[i][n-1] == 'O') {
+                check[i][n-1] = true;
+                X.add(i); Y.add(n-1);
+            }
+        }
+        for(int i = 0; i < n; i++) {
+            if(board[0][i] == 'O') {
+                check[0][i] = true;
+                X.add(0); Y.add(i);
+            }
+            if(board[m-1][i] == 'O') {
+                check[m-1][i] = true;
+                X.add(m-1); Y.add(i);
+            }
+        }
+        
+        while(X.size() != 0) {
+            int xx = X.get(0); X.remove(0);
+            int yy = Y.get(0); Y.remove(0);
+            if(xx-1 >= 0 && board[xx-1][yy] == 'O' && check[xx-1][yy] == false) {
+                check[xx-1][yy] = true;
+                X.add(xx-1); Y.add(yy);
+            }
+            if(xx+1 < m && board[xx+1][yy] == 'O' && check[xx+1][yy] == false) {
+                check[xx+1][yy] = true;
+                X.add(xx+1); Y.add(yy);
+            }
+            if(yy-1 >= 0 && board[xx][yy-1] == 'O' && check[xx][yy-1] == false) {
+                check[xx][yy-1] = true;
+                X.add(xx); Y.add(yy-1);
+            }
+            if(yy+1 < n && board[xx][yy+1] == 'O' && check[xx][yy+1] == false) {
+                check[xx][yy+1] = true;
+                X.add(xx); Y.add(yy+1);
+            }
+        }
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(board[i][j] == 'O' && check[i][j] == false) {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+    }
+}
