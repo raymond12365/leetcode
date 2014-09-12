@@ -1,0 +1,37 @@
+public class DivedeTwoIntegers {
+	public int divide(int dividend, int divisor) {
+		boolean sig = true;
+		long divd = dividend, divs = divisor;
+		if(dividend < 0 && divisor < 0) {
+			divd = -(long)dividend;
+			divs = -(long)divisor;
+		}
+		else if(dividend < 0 && divisor >= 0) {
+			sig = false;
+			divd = -(long)dividend;
+		}
+		else if(dividend >= 0 && divisor < 0) {
+			sig = false;
+			divs = -(long)divisor;
+		}
+		long temp, cnt, res = 0;
+
+		while(divd >= divs) {
+			temp = divs;
+			cnt = 1;
+			while(divd - temp >= temp) {
+				temp = temp + temp;
+				cnt = cnt << 1;
+			}
+			res = res + cnt;
+			divd = divd - temp;
+		}
+		if(sig == false) return -(int)res;
+		return (int)res;
+	}
+
+	public static void main(String[] args) {
+		DivedeTwoIntegers dt = new DivedeTwoIntegers();
+		System.out.println(dt.divide(-1010369383, -2147483648));
+	}
+}
