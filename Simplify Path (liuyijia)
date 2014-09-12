@@ -1,0 +1,25 @@
+class Solution {
+public:
+    string simplifyPath(string path)
+	{
+		int index = 0;
+		int size = path.length();
+		string result = "";
+		vector<string> v;
+		while (index < size)
+		{
+			while (index < size && path[index] == '/') index++;
+			if (index == size) break;
+			int end = index + 1;
+			while (end < size && path[end] != '/') end++;
+			string substring = path.substr(index, end - index);
+			if (substring == "..") { if (!v.empty()) v.pop_back();}
+			else if (substring != ".") v.push_back(substring);
+			index = end + 1;
+		}
+		if (v.empty()) return "/";
+		int v_size = v.size();
+		for (int i = 0; i < v_size; i++) result += "/" + v[i];
+		return result;
+	}
+};
