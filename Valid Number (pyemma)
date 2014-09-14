@@ -1,0 +1,85 @@
+public class ValidNumber {
+	int	start = 0; 
+	int	space = 1; 
+	int	sign = 2;
+	int	digit = 3; 
+	int	dot = 4;
+	int	afterE = 5; 
+	int	nosign = 6;
+	int	invalid = 7;
+	int afterDot = 8;
+	int afterSign = 9;
+
+	private int next(String s, int ind, int state) {
+		char ch = s.charAt(ind);
+		if(state == start) {
+			if(ch == ' ') return start;
+			else if(ch == '+' || ch == '-') return sign;
+			else if(isdigit(ch) == true) return digit;
+			else if(ch == '.') return dot;
+			else return invalid; 
+		}
+		else if(state == sign) {
+			if(ch == '.') return dot;
+			else if(isdigit(ch) == true) return	 digit;
+			else return invalid;
+		}
+		else if(state == digit) {
+			if(isdigit(ch) == true) return digit;
+			else if(ch == '.') return afterDot;
+			else if(ch == 'e') return afterE;
+			else if(ch == ' ') return space;
+			else return invalid;
+		}
+		else if(state == dot) {
+			if(isdigit(ch) == true) return afterDot;
+			else return invalid;
+		}
+		else if(state == afterDot) {
+			if(isdigit(ch) == true) return afterDot;
+			else if(ch == 'e') return afterE;
+			else if(ch == ' ') return space;
+			else return invalid;
+		}
+		else if(state == afterE) {
+			if(isdigit(ch)) return nosign;
+			else if(ch == '+' || ch == '-') return afterSign;
+			else return invalid;
+		}
+		else if(state == afterSign) {
+			if(isdigit(ch)) return nosign;
+			else return invalid;
+		}
+		else if(state == nosign) {
+			if(isdigit(ch) == true) return nosign;
+			else if(ch == ' ') return space;
+			else return invalid;
+		}
+		else if(state == space) {
+			if(ch == ' ') return space;
+			else return invalid;
+		}
+		else return invalid;
+	}
+
+	private boolean isdigit(char ch) {
+		if(ch >= '0' && ch <= '9') return true;
+		else return false;
+	}
+
+	public boolean isNumber(String s) {
+		int state = start;
+		for(int i = 0; i < s.length(); i++) {
+			state = next(s, i, state);
+			if(state == invalid) return false;
+		}
+
+		if(state == digit || state == space || state == afterDot || state == nosign) return true;
+		else return false;
+	}
+
+	public static void main(String[] args) {
+		ValidNumber vn = new ValidNumber();
+		System.out.println(vn.isNumber("2e+"));
+	}
+}
