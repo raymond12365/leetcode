@@ -1,0 +1,74 @@
+import java.util.*;
+public class WordLadderII {
+	ArrayList<List<String>> res = new ArrayList<List<String>>();
+	ArrayList<String> row = new ArrayList<String>();
+	public List<List<String>> findLadders(String start, String end, Set<String> dict) {
+		HashMap<String, Integer> pathlen = new HashMap<String, Integer>();
+		HashMap<String, ArrayList<String>> path = new HashMap<String, ArrayList<String>>();
+		Queue<String> qu = new LinkedList<String>();
+		String str = "";
+		int cnt = 0;
+		int m = start.length();
+
+		qu.add(start);
+		pathlen.put(start, 1);
+		while(qu.size() != 0) {
+			str = qu.remove();
+			if(str.equals(end) == true) break;
+			cnt = pathlen.get(str);
+			for(int i = 0; i < m; i++) {
+				for(char j = 'a'; j <= 'z'; j++) {
+					StringBuffer sb = new StringBuffer(str);
+					sb.setCharAt(i, j);
+					String s = sb.toString();
+					if(s.equals(end) == true || dict.contains(s) == true) {
+						if(pathlen.containsKey(s) == true) {
+							if(pathlen.get(s) == cnt+1) {
+								path.get(s).add(str);
+							}
+						}
+						else {
+							pathlen.put(s, cnt+1);
+							ArrayList<String> arr = new ArrayList<String>();
+							arr.add(str);
+							path.put(s, arr);
+							qu.add(s);
+						}
+					}
+				}
+			}
+		}
+		if(pathlen.containsKey(end) == false) return res;
+		row.add(end);
+		dfs(path, start, end);
+
+		return res;
+	}
+
+	public void dfs(HashMap<String, ArrayList<String>> map, String start, String end) {
+		if(end.equals(start) == true) {
+			ArrayList<String> temp = new ArrayList<String>();
+			for(int i = row.size()-1; i >= 0; i--) {
+				temp.add(row.get(i));
+			}
+			res.add(temp);
+		}
+		else {
+			for(String str : map.get(end)) {
+				row.add(str);
+				dfs(map, start, str);
+				row.remove(row.size()-1);
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+		WordLadderII wl = new WordLadderII();
+		HashSet<String> dict = new HashSet<String>();
+		dict.add("hot"); dict.add("dot"); dict.add("dog"); dict.add("lot"); dict.add("log");
+		String start = "hit";
+		String end = "cog";
+		List<List<String>> res = wl.findLadders(start, end, dict);
+		System.out.println(res.toString());
+	}
+}
