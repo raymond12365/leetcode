@@ -1,0 +1,77 @@
+import java.util.*;
+
+public class TextJustification {
+	public List<String> fullJustify(String[] words, int L) {
+		ArrayList<String> res = new ArrayList<String>();
+		if(words.length == 0) return res; // corner case
+		int cnt = 0; // character counter
+		int start = 0, end = 0; // index
+
+		while(start < words.length) {
+			cnt = 0;
+			while(end < words.length && cnt + words[end].length() <= L) {
+				cnt += words[end].length();
+				cnt += 1;
+				end++;
+			}
+			cnt--;
+			if(end != words.length) res.add(line(words, start, end, cnt, L));
+			else res.add(lastLine(words, start, end, cnt, L));
+			start = end;
+		}
+
+		return res;
+	}
+
+	private String line(String[] words, int start, int end, int cnt, int L) {
+		int extra_blank = L - cnt;
+		int blank = extra_blank / (end - start - 1 == 0 ? 1 : (end - start - 1)); // special case for only one word
+		int more = extra_blank % (end - start - 1 == 0 ? 1 : (end - start - 1));
+		StringBuffer str = new StringBuffer();
+
+		if(end - start == 1) { // special case for only one word
+			str.append(words[start]);
+			for(int j = 0; j < blank; j++) 
+				str.append(" ");
+			return str.toString();
+		}
+
+		for(int i = start; i < end; i++) { // normal case
+			str.append(words[i]);
+			if(i != end-1) {
+				str.append(" ");
+				for(int j = 0; j < blank; j++) {
+					str.append(" ");
+				}
+				if(more > 0) {
+					str.append(" ");
+					more--;
+				}
+			}
+		}
+
+		return str.toString();
+	}
+
+	private String lastLine(String[] words, int start, int end, int cnt, int L) {
+		StringBuffer str = new StringBuffer();
+		for(int i = start; i < end; i++) {
+			str.append(words[i]);
+			if(i != end-1) 
+				str.append(" ");
+		}
+		while(cnt < L) {
+			str.append(" ");
+			cnt++;
+		}
+		return str.toString();
+	}
+
+	public static void main(String[] args) {
+		String[] words = {"Fourscore","and","seven","years","ago","our","fathers","brought","forth","on","this","continent","a","new","nation,","conceived","in","liberty","and","dedicated","to","the","proposition","that","all","men","are","created","equal.","Now","we","are","engaged","in","a","great","civil","war,","testing","whether","that","nation","or","any","nation","so","conceived","and","so","dedicated","can","long","endure.","We","are","met","on","a","great","battlefield","of","that","war.","We","have","come","to","dedicate","a","portion","of","that","field","as","a","final","resting-place","for","those","who","here","gave","their","lives","that","that","nation","might","live.","It","is","altogether","fitting","and","proper","that","we","should","do","this.","But","in","a","larger","sense,","we","cannot","dedicate,","we","cannot","consecrate,","we","cannot","hallow","this","ground.","The","brave","men,","living","and","dead","who","struggled","here","have","consecrated","it","far","above","our","poor","power","to","add","or","detract.","The","world","will","little","note","nor","long","remember","what","we","say","here,","but","it","can","never","forget","what","they","did","here.","It","is","for","us","the","living","rather","to","be","dedicated","here","to","the","unfinished","work","which","they","who","fought","here","have","thus","far","so","nobly","advanced.","It","is","rather","for","us","to","be","here","dedicated","to","the","great","task","remaining","before","us--that","from","these","honored","dead","we","take","increased","devotion","to","that","cause","for","which","they","gave","the","last","full","measure","of","devotion--that","we","here","highly","resolve","that","these","dead","shall","not","have","died","in","vain,","that","this","nation","under","God","shall","have","a","new","birth","of","freedom,","and","that","government","of","the","people,","by","the","people,","for","the","people","shall","not","perish","from","the","earth."};
+		String[] word = {"Listen","to","many,","speak","to","a","few."};
+		int L = 6;
+		TextJustification tj = new TextJustification();
+		System.out.println(tj.fullJustify(word, L).toString());
+	}
+}
