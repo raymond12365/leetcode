@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        typedef unordered_map<char, int> mmap;
+        mmap seen;
+        int start = 0;
+        int maxLen = 0;
+        for(int i=0;i<s.length();i++)
+        {
+            mmap::iterator it = seen.find(s[i]);
+            if(it == seen.end())
+                maxLen = max(maxLen, i - start + 1);
+            else
+            {
+                int tmp = it->second;
+                for(int j=start;j<=tmp;j++)
+                    seen.erase(s[j]);
+                start = tmp+1;
+            }
+            seen[s[i]] = i;
+        }
+        return maxLen;
+    }
+};
