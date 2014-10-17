@@ -1,0 +1,35 @@
+class Solution {
+public:
+    string minWindow(string S, string T) 
+	{
+		int size_s = S.length(), size_t = T.length();
+		if (!size_s || !size_t) return "";
+		int find[256] = { 0 };
+		int found[256] = { 0 };
+		for (int i = 0; i < size_t; i++) find[T[i]]++;
+		int begin = 0, beginmin = 0, endmin = size_s + 1, count = 0;
+		for (int end = 0; end < size_s; end++)
+		{
+			if (!find[S[end]]) continue;
+			char temp = S[end];
+			found[temp]++;
+			if (found[temp] <= find[temp]) count++;
+
+			if (count == size_t)
+			{
+				while (!find[S[begin]] || find[S[begin]] < found[S[begin]])
+				{
+					if (find[S[begin]] < found[S[begin]]) found[S[begin]]--;
+					begin++;
+				}
+				if (endmin - beginmin > end - begin)
+				{
+					endmin = end;
+					beginmin = begin;
+				}
+			}
+		}
+		if (endmin <= size_s) return S.substr(beginmin, endmin - beginmin + 1);
+		else return "";
+	}
+};
