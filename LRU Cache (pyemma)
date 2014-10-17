@@ -1,0 +1,100 @@
+import java.util.*;
+
+public class LRUCache {
+	private class CacheNode {
+		CacheNode next, prior;
+		int key, val;
+		public CacheNode(int key, int val) {
+			this.key = key;
+			this.val = val;
+			next = null; prior = null;
+		}
+	}
+
+	CacheNode head, tail;
+	HashMap<Integer, CacheNode> index;
+	int size, capacity;
+
+	public LRUCache(int capacity) {
+		index = new HashMap<Integer, CacheNode>();
+		head = new CacheNode(-1, 0);
+		tail = head;
+		size = 0;
+		this.capacity = capacity;
+
+	}
+
+	public int get(int key) {
+		if(index.containsKey(key) == false) {
+			return -1;
+		}
+		else {
+			CacheNode cur = index.get(key);
+			if(cur != tail)
+				update(cur);
+			return cur.val;
+		}
+	}
+
+	public void set(int key, int value) {
+		if(index.containsKey(key) == true) {
+			CacheNode cur = index.get(key);
+			cur.val = value;
+			if(cur != tail)
+				update(cur);
+		}
+		else {
+			if(size < capacity) {
+				addnew(key, value);
+				size++;
+			}
+			else {
+				CacheNode node = head.next;
+				index.remove(node.key);
+				head.next = head.next.next;
+				if(head.next != null)
+					head.next.prior = head;
+				addnew(key, value);
+			}
+		}
+	}
+
+	private void update(CacheNode cur) {
+		CacheNode prior = cur.prior;
+		CacheNode next = cur.next;
+		prior.next = next;
+		next.prior = prior;
+		cur.next = tail.next;
+		cur.prior = tail;
+		tail.next = cur;
+		tail = cur;
+	}
+
+	private void addnew(int key, int value) {
+		CacheNode cur = new CacheNode(key, value);
+		cur.next = tail.next;
+		cur.prior = tail;
+		tail.next = cur;
+		tail = cur;
+		index.put(key, cur);
+	}
+
+	public void print() {
+		CacheNode temp = head.next;
+		while(temp != null) {
+			System.out.print(temp.key + ":" + temp.val + " ");
+			temp = temp.next;
+		}
+		System.out.println("");
+	}
+
+	public static void main(String[] args) {
+		LRUCache lru = new LRUCache(1);
+		lru.set(2, 1);
+		System.out.println(lru.get(2));
+		lru.set(3, 2);
+		System.out.println(lru.get(2));
+		System.out.println(lru.get(3));
+
+	}
+}
