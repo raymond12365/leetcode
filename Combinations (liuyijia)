@@ -1,0 +1,24 @@
+class Solution {
+public:
+    void combinedfs(int start, int position, int n, int k, vector<vector<int> > &result, vector<int> &path)
+	{
+		if (position == k) result.push_back(path);
+		else
+		{
+			for (int i = start; i <= n; i++)
+			{
+				path.push_back(i);
+				combinedfs(i + 1, position + 1, n, k, result, path);
+				path.pop_back();
+			}
+		}
+	}
+
+	vector<vector<int> > combine(int n, int k) 
+	{
+		vector<vector<int> > result;
+		vector<int> path;
+		combinedfs(1, 0, n, k, result, path);
+		return result;
+	}
+};
