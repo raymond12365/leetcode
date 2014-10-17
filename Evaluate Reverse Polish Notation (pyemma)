@@ -1,0 +1,35 @@
+import java.util.*;
+public class EvaluateReversePolishNotation {
+	public int evalRPN(String[] tokens) {
+        Stack<Integer> number = new Stack<Integer>();
+        
+        for(int i = 0; i < tokens.length; i++) {
+            if(tokens[i].equals("+") == true) {
+                int num1 = number.pop();
+                int num2 = number.pop();
+                number.push(num1 + num2);
+            }
+            else if(tokens[i].equals("-") == true) {
+                int num1 = number.pop();
+                int num2 = number.pop();
+                number.push(num2 - num1);
+            }
+            else if(tokens[i].equals("*") == true) {
+                int num1 = number.pop();
+                int num2 = number.pop();
+                number.push(num1 * num2);
+            }
+            else if(tokens[i].equals("/") == true) {
+                int num1 = number.pop();
+                int num2 = number.pop();
+                number.push(num2 / num1);
+            }
+            else {
+                int num = Integer.parseInt(tokens[i]);
+                number.push(num);
+            }
+        }
+        
+        return number.pop();
+    }
+}
